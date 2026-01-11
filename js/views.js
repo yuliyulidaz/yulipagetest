@@ -256,7 +256,7 @@
             setIsSpacedDialogue(newState);
             let newText = textInput;
 
-            const checkIsDialogue = (str) => str.startsWith('“') || str.startsWith('"') || str.startsWith("'") || str.startsWith('‘');
+            const checkIsDialogue = (str) => str.startsWith('“') || str.startsWith('"') || str.startsWith('❘') || str.startsWith('|');
 
             if (newState) {
                 const lines = textInput.split('\n');
@@ -278,7 +278,7 @@
                     processedLines.push(line);
                 }
                 newText = processedLines.join('\n');
-                newText = newText.replace(/([^\n])([“"‘'])/g, '$1\n$2');
+                newText = newText.replace(/([ \t])([“"])/g, '$1\n$2');
             } else {
                 const lines = textInput.split('\n');
                 const compactLines = [];
@@ -379,9 +379,11 @@
                             <div className="hidden md:block md:order-2 w-px h-6 bg-slate-200 mx-3"></div>
                             <div className="order-2 md:order-3 flex-shrink-0 flex items-center gap-2">
                                 <select value={pageSize} onChange={(e) => setPageSize(e.target.value)} className="bg-transparent text-xs font-bold text-slate-500 outline-none cursor-pointer py-1 text-center hover:text-slate-800 transition-colors">
-                                    {Object.entries(window.PAPER_SIZES).map(([key, config]) => (
-                                        <option key={key} value={key}>{config.label}</option>
-                                    ))}
+                                    {Object.entries(window.PAPER_SIZES)
+                                        .filter(([_, config]) => !config.hidden)
+                                        .map(([key, config]) => (
+                                            <option key={key} value={key}>{config.label}</option>
+                                        ))}
                                 </select>
                             </div>
                             <div className="hidden md:block md:order-4 w-px h-6 bg-slate-200 mx-3"></div>
@@ -503,7 +505,7 @@
         ];
 
         return (
-            <div className="min-h-screen bg-[#FAFAFA] flex flex-col h-screen overflow-hidden text-[#1C1C1C]">
+            <div className="min-h-screen bg-[#FAFAFA] flex flex-col text-[#1C1C1C]">
                 {/* ----------------- MOBILE LAYOUT (Preserved) ----------------- */}
                 <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 flex flex-col">
                     <div className={`bg-white/95 backdrop-blur border-t border-slate-100 transition-all duration-300 overflow-hidden ${isLayer2Visible ? 'h-auto max-h-[350px] opacity-100' : 'max-h-0 opacity-0'}`}>
@@ -657,7 +659,7 @@
                                             onClick={onContentClick}
                                             contentRef={desktopContentRef}
                                         />
-                                        <window.PageFooter pageIdx={currentPageIdx} metadata={metadata} activeFont={activeFont} />
+                                        <window.PageFooter pageIdx={currentPageIdx} metadata={metadata} activeFont={activeFont} pageSize={pageSize} />
                                     </div>
                                 )}
 
@@ -740,7 +742,7 @@
                                                     형광펜 / 글자색을 사용하세요.
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-2">
-                                                    {['noto', 'nanum', 'jeju', 'gowun', 'ridi', 'maru', 'hahmlet', 'diphylleia'].map((key) => {
+                                                    {['noto', 'nanum', 'jeju', 'gowun', 'maru', 'hahmlet', 'diphylleia'].map((key) => {
                                                         const font = window.FONT_MAP[key];
                                                         if (!font) return null;
                                                         const isActive = activeFont === key;
