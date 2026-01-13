@@ -453,7 +453,10 @@
                 <div className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-100 z-[60]">
                     <div className="w-full max-w-3xl mx-auto h-full px-8 md:px-12 flex items-center justify-between">
                         <div className="flex items-center gap-2 truncate mr-2">
-                            <h1 className="text-sm md:text-xl font-serif font-bold text-slate-800 truncate">소설 내지 이미지 생성기</h1>
+                            <h1 className="font-serif font-bold text-slate-800 truncate flex items-center">
+                                <span className="md:hidden text-lg">📄</span>
+                                <span className="hidden md:inline text-xl">소설 내지 이미지 생성기</span>
+                            </h1>
                             <button
                                 onClick={() => setShowInfoModal(true)}
                                 className="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-full hover:bg-slate-100 flex-shrink-0"
@@ -481,12 +484,38 @@
 
                 {/* 2. Toolbar (Fixed, Full Width Background, Constrained Content) */}
                 <div className="fixed top-16 left-0 right-0 bg-white/95 backdrop-blur border-b border-slate-100 z-50 shadow-sm py-2 md:py-0 md:h-14">
-                    <div className="w-full max-w-3xl mx-auto h-full px-4 md:px-12 flex flex-wrap md:flex-nowrap items-center justify-between">
-                        {/* Toolbar Content - Adjusted Layout */}
-                        <div className="flex w-full md:w-auto justify-between items-center px-2 md:px-0 md:contents">
-                            <button onClick={handlePaste} className="order-1 md:order-1 flex-shrink-0 flex items-center justify-center text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors">붙여넣기</button>
-                            <div className="hidden md:block md:order-2 w-px h-6 bg-slate-200 mx-3"></div>
-                            <div className="order-2 md:order-3 flex-shrink-0 flex items-center gap-2">
+                    <div className="w-full max-w-3xl mx-auto h-full px-4 md:px-12 flex flex-wrap md:flex-nowrap items-center justify-between gap-y-2 md:gap-y-0">
+
+                        {/* Group 1: Delete, Paste, Undo/Redo, Size */}
+                        <div className="flex w-full md:w-auto items-center justify-between md:justify-start gap-2">
+                            {/* Delete Button (Coral Icon) */}
+                            <div className="relative">
+                                <button
+                                    onClick={onDelete}
+                                    className="flex items-center justify-center w-8 h-8 text-rose-500 hover:text-rose-600 transition-colors rounded-full hover:bg-rose-50"
+                                    aria-label="삭제"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                                {inputToast && <div className="absolute top-8 left-0 w-max bg-slate-800 text-white text-xs px-3 py-1.5 rounded shadow-lg z-[100] animate-fade-in-out">{inputToast}</div>}
+                                {showUndo && <div className="absolute top-8 left-0 w-max bg-slate-800 text-white px-3 py-1.5 rounded shadow-lg flex items-center gap-2 text-xs z-[100] cursor-pointer animate-fade-in-out" onClick={onUndo}><span>취소</span><svg className="w-3 h-3 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></div>}
+                            </div>
+
+                            {/* Paste */}
+                            <button onClick={handlePaste} className="flex-shrink-0 flex items-center justify-center text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors px-1">붙여넣기</button>
+
+                            {/* Undo / Redo */}
+                            <div className="flex items-center gap-1">
+                                <button onClick={handleUndo} disabled={historyIndex <= 0} className={`p-1 rounded-full ${historyIndex > 0 ? 'hover:bg-slate-100 text-slate-500' : 'text-slate-200'}`}><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg></button>
+                                <button onClick={handleRedo} disabled={historyIndex >= history.length - 1} className={`p-1 rounded-full ${historyIndex < history.length - 1 ? 'hover:bg-slate-100 text-slate-500' : 'text-slate-200'}`}><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6" /></svg></button>
+                            </div>
+
+                            <div className="w-px h-4 bg-slate-200 mx-1"></div>
+
+                            {/* Paper Size */}
+                            <div className="flex items-center">
                                 <select value={pageSize} onChange={(e) => setPageSize(e.target.value)} className="bg-transparent text-xs font-bold text-slate-500 outline-none cursor-pointer py-1 text-center hover:text-slate-800 transition-colors">
                                     {Object.entries(window.PAPER_SIZES)
                                         .filter(([_, config]) => !config.hidden)
@@ -495,32 +524,31 @@
                                         ))}
                                 </select>
                             </div>
-                            <div className="hidden md:block md:order-4 w-px h-6 bg-slate-200 mx-3"></div>
-                            <div className="order-3 md:order-9 flex-shrink-0 flex items-center gap-1 md:ml-0">
-                                <button onClick={handleUndo} disabled={historyIndex <= 0} className={`p-1 rounded-full ${historyIndex > 0 ? 'hover:bg-slate-100 text-slate-500' : 'text-slate-200'}`}><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg></button>
-                                <button onClick={handleRedo} disabled={historyIndex >= history.length - 1} className={`p-1 rounded-full ${historyIndex < history.length - 1 ? 'hover:bg-slate-100 text-slate-500' : 'text-slate-200'}`}><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6" /></svg></button>
-                            </div>
-                            <div className="relative order-4 md:order-10 md:ml-3">
-                                <button onClick={onDelete} className="flex-shrink-0 text-xs font-bold text-slate-400 hover:text-red-500 transition-colors">삭제</button>
-                                {inputToast && <div className="absolute top-8 right-0 w-max bg-slate-800 text-white text-xs px-3 py-1.5 rounded shadow-lg z-[100] animate-fade-in-out">{inputToast}</div>}
-                                {showUndo && <div className="absolute top-8 right-0 w-max bg-slate-800 text-white px-3 py-1.5 rounded shadow-lg flex items-center gap-2 text-xs z-[100] cursor-pointer animate-fade-in-out" onClick={onUndo}><span>취소</span><svg className="w-3 h-3 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></div>}
-                            </div>
                         </div>
-                        <div className="basis-full h-0 md:hidden order-5"></div>
-                        <div className="order-6 md:order-5 flex w-full md:w-auto items-center justify-center gap-4 md:gap-0 mt-2 md:mt-0">
-                            <div className="flex items-center gap-1 font-serif text-slate-500 md:mx-3">
+
+                        {/* PC Divider (Hidden on Mobile) */}
+                        <div className="hidden md:block w-px h-6 bg-slate-200 mx-1"></div>
+
+                        {/* Group 2: Symbols, Quote Change, Spacing */}
+                        <div className="flex w-full md:w-auto items-center justify-start md:justify-end gap-1 md:gap-2">
+                            {/* Symbols */}
+                            <div className="flex items-center gap-1 font-serif text-slate-500">
                                 <button onClick={() => insertText('“ ”', -2)} className="w-8 h-8 flex items-center justify-center hover:bg-slate-100 rounded text-lg font-bold pb-1">“ ”</button>
                                 <button onClick={() => insertText('‘ ’', -2)} className="w-8 h-8 flex items-center justify-center hover:bg-slate-100 rounded text-lg font-bold pb-1">‘ ’</button>
                                 <button onClick={() => insertText('……')} className="w-8 h-8 flex items-center justify-center hover:bg-slate-100 rounded text-sm font-bold">…</button>
                                 <button onClick={() => insertText('—')} className="w-8 h-8 flex items-center justify-center hover:bg-slate-100 rounded text-sm font-bold">—</button>
-                                <button onClick={() => insertText('***')} className="w-10 h-8 flex items-center justify-center hover:bg-slate-100 rounded text-sm font-bold">***</button>
+                                <button onClick={() => insertText('***')} className="w-8 h-8 flex items-center justify-center hover:bg-slate-100 rounded text-sm font-bold">***</button>
                             </div>
-                            <div className="w-px h-6 bg-slate-200 mx-3"></div>
-                            <div className="flex items-center gap-3 md:mx-3">
-                                <button onClick={handleQuoteToggle} className={`flex items-center gap-1.5 text-xs font-bold transition-all whitespace-nowrap ${isCurlyQuotes ? 'text-[#1C1C1C]' : 'text-slate-500 hover:text-slate-800'}`}>따옴표 변경</button>
-                                <button onClick={handleSpacingToggle} className={`flex items-center gap-1.5 text-xs font-bold transition-all whitespace-nowrap ${isSpacedDialogue ? 'text-[#1C1C1C]' : 'text-slate-500 hover:text-slate-800'}`}><svg className="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" /></svg>대사 간격</button>
+
+                            <div className="w-px h-4 bg-slate-200"></div>
+
+                            {/* Text Actions */}
+                            <div className="flex items-center gap-3">
+                                <button onClick={handleQuoteToggle} className={`flex items-center gap-1.5 text-xs font-bold transition-all whitespace-nowrap ${isCurlyQuotes ? 'text-[#1C1C1C]' : 'text-slate-500 hover:text-slate-800'}`}>따옴표변경</button>
+                                <button onClick={handleSpacingToggle} className={`flex items-center gap-1.5 text-xs font-bold transition-all whitespace-nowrap ${isSpacedDialogue ? 'text-[#1C1C1C]' : 'text-slate-500 hover:text-slate-800'}`}><svg className="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" /></svg>대사간격</button>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
