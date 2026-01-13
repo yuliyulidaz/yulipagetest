@@ -36,6 +36,7 @@
             padding-left: ${sizeConfig.paddingLeft};
             padding-right: ${sizeConfig.paddingRight};
             white-space: pre-wrap;
+            word-break: normal;
         `;
 
         // 3. Apply Typography
