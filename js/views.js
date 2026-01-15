@@ -544,8 +544,8 @@
 
                             {/* Text Actions */}
                             <div className="flex items-center gap-3 flex-shrink-0 pr-4 md:pr-0">
-                                <button onClick={handleQuoteToggle} className={`flex items-center gap-1.5 text-xs font-bold transition-all whitespace-nowrap ${isCurlyQuotes ? 'text-[#1C1C1C]' : 'text-slate-500 hover:text-slate-800'}`}>따옴표변경</button>
-                                <button onClick={handleSpacingToggle} className={`flex items-center gap-1.5 text-xs font-bold transition-all whitespace-nowrap ${isSpacedDialogue ? 'text-[#1C1C1C]' : 'text-slate-500 hover:text-slate-800'}`}><svg className="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" /></svg>대사간격</button>
+                                <button onClick={handleQuoteToggle} className={`flex items-center gap-1.5 text-xs font-bold transition-all whitespace-nowrap ${isCurlyQuotes ? 'text-[#1C1C1C]' : 'text-slate-500 md:hover:text-slate-800'}`}>따옴표변경</button>
+                                <button onClick={handleSpacingToggle} className={`flex items-center gap-1.5 text-xs font-bold transition-all whitespace-nowrap ${isSpacedDialogue ? 'text-[#1C1C1C]' : 'text-slate-500 md:hover:text-slate-800'}`}><svg className="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" /></svg>대사간격</button>
                             </div>
                         </div>
 
