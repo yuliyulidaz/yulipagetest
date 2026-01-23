@@ -623,7 +623,7 @@
             pageSize, pageHighlights, mockupSpreadIdx, setMockupSpreadIdx, spreads,
             frontFlyleafText, setFrontFlyleafText, backFlyleafText, setBackFlyleafText,
             focusedFlyleaf, setFocusedFlyleaf, onEditFlyleaf,
-            onDownloadAll, onDownloadCurrent, onBack,
+            onDownloadAll, onDownloadCurrent, onDownloadPDF, onBack,
             mobileContentRef, desktopContentRef, onContentClick, onMouseUp
         } = props;
 
